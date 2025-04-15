@@ -71,12 +71,12 @@ spec:
       volumes:
         - name: wordpress-persistent-storage
           persistentVolumeClaim:
-            claimName: wordpress-pvc
+            claimName: wp-pv-claim
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wordpress-pvc
+  name: wp-pv-claim
 spec:
   accessModes:
     - ReadWriteOnce
