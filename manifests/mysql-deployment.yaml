@@ -7,20 +7,19 @@ metadata:
     app: wordpress
     tier: mysql
 spec:
+  selector:
+    app: wordpress
+    tier: mysql
   ports:
     - port: 3306
-  ##
-  # Create service selector labels here
-  ##
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: wordpress-mysql
 data:
-  ##
-  # create non-sensative data attributes
-  ##
+  MYSQL_DATABASE: wordpress
+  MYSQL_USER: wpuser
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,35 +29,58 @@ metadata:
     app: wordpress
     tier: mysql
 spec:
-  ##
-  # Create app label selectors here
-  ##
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: mysql
   template:
-    ##
-    # Create metadata labels here
-    ##
+    metadata:
+      labels:
+        app: wordpress
+        tier: mysql
     spec:
       containers:
       - image: mysql:8.0
         name: mysql
         env:
-        ##
-        # mount non-sensitive environment vars from configmap
-        # MYSQL_DATABASE | MYSQL_USER
-        ##
-
-        ##
-        # mount sensitive environment vars from secret
-        # MYSQL_ROOT_PASSWORD | MYSQL_PASSWORD
-        ##
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: wordpress-mysql
+                key: MYSQL_DATABASE
+          - name: MYSQL_USER
+            valueFrom:
+              configMapKeyRef:
+                name: wordpress-mysql
+                key: MYSQL_USER
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-pass
+                key: password
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-pass
+                key: password
         ports:
         - containerPort: 3306
           name: mysql
-      ##
-      # define volume mounts here, be sure to reference
-      # the PVC in your container spec
-      ##
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
 ---
-##
-# Create persistent volume claim here
-##
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
