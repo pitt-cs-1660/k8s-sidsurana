@@ -18,7 +18,7 @@ kind: ConfigMap
 metadata:
   name: wordpress-mysql
 data:
-  databse: wordpress
+  database: wordpress
   user: wpuser
 ---
 apiVersion: apps/v1
