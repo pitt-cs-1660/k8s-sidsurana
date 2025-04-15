@@ -3,5 +3,13 @@ kind: ConfigMap
 metadata:
   name: wordpress
 data:
-  WORDPRESS_DB_HOST: wordpress-mysql
-  WORDPRESS_DB_USER: root
+  host: wordpress-mysql
+  user: root
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wordpress-mysql
+data:
+  database: wordpress
+  user: wpuser
