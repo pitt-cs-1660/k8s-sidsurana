@@ -18,8 +18,8 @@ kind: ConfigMap
 metadata:
   name: wordpress-mysql
 data:
-  MYSQL_DATABASE: wordpress
-  MYSQL_USER: wpuser
+  databse: wordpress
+  user: wpuser
 ---
 apiVersion: apps/v1
 kind: Deployment
