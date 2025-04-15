@@ -47,12 +47,12 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: wordpress-mysql
-                key: MYSQL_DATABASE
+                key: database
           - name: MYSQL_USER
             valueFrom:
               configMapKeyRef:
                 name: wordpress-mysql
-                key: MYSQL_USER
+                key: user
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
