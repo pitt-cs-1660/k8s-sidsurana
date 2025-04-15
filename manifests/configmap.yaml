@@ -5,11 +5,3 @@ metadata:
 data:
   WORDPRESS_DB_HOST: wordpress-mysql
   WORDPRESS_DB_USER: root
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: wordpress-mysql
-data:
-  MYSQL_ROOT_PASSWORD: somepass
