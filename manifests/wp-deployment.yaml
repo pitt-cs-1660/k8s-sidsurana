@@ -14,15 +14,7 @@ spec:
     - port: 80
       targetPort: 80
   type: NodePort
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: wordpress
-data:
-  WORDPRESS_DB_HOST: wordpress-mysql
-  WORDPRESS_DB_USER: root
+  
 ---
 apiVersion: apps/v1
 kind: Deployment
