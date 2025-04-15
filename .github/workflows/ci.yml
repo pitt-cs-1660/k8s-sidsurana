@@ -8,23 +8,23 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Start minikube
         uses: medyagh/setup-minikube@latest
 
-      - name: Apply Kubernetes manifests
+      - name: Delete existing deployments to avoid selector conflict
         run: |
-          kubectl apply -f manifests/
+          kubectl delete deployment wordpress --ignore-not-found
+          kubectl delete deployment wordpress-mysql --ignore-not-found
+
+      - name: Apply Kubernetes manifests
+        run: kubectl apply -f manifests/
 
       - name: Wait for pods to be ready
-        run: |
-          kubectl wait --for=condition=available --timeout=120s deployment/wordpress
-          kubectl wait --for=condition=available --timeout=120s deployment/wordpress-mysql
+        run: kubectl wait --for=condition=ready pod --all --timeout=180s
 
       - name: Run check.sh
-        run: |
-          ./check.sh
+        run: ./check.sh
+
